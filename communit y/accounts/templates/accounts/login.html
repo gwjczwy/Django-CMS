@@ -1,0 +1,20 @@
+欢迎登陆 没有账号?<a href="/user/register">点我</a>注册<hr>
+<label>用户名</label>
+<input type="text" id="username"><br>
+
+<label>密码</label>
+<input type="password" id="password"><br>
+
+<input type="button" value="登陆" onclick=send()>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
+
+<script>
+    function send()
+    {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        $.post('', {'username':username, 'password':password});
+    }
+</script>

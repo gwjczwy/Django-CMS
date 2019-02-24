@@ -1,0 +1,10 @@
+{% if hasLogin %}
+用户名 {{userProfile.user.username}}<br>
+邮箱{{userProfile.user.email}}<br>
+昵称{{userProfile.nickname}}<br>
+硬币{{userProfile.icon}}<br>
+电话号码{{userProfile.telephone}}<br>
+性别{{userProfile.gender}}<br>
+{% else %}
+<a href="/user/login">登陆</a>后可查看个人信息!
+{% endif %}
