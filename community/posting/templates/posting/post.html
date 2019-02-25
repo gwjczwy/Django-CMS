@@ -10,47 +10,15 @@
 {%for i in comment%}
 
 <hr>
-<b>{{i.name}}</b><br>
+<b>{{i.username}}</b><br>
 {{i.body}}</br>
 {{i.createDate}}
 
 {% endfor %}
-{% comment %} create post {% endcomment %}
+{% comment %} create comment {% endcomment %}
 
-<input type='button' value='按我' onclick='loadXMLDoc()'>
-
-<script>
-function loadXMLDoc(){
-    xmlhttp=new XMLHttpRequest();
-    xmlhttp.open("POST","",true);
-    {% comment %} xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded"); #添加请求头 {% endcomment %}
-    xmlhttp.send();
-}
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+<form id="user_form" method="post" action="/posting/createcomment/{{post.id}}" enctype="multipart/form-data">
+    {% csrf_token %}
+     {{ commentForm.as_p }}
+    <input type="submit" name="createComment" value="发送" />
+</form>

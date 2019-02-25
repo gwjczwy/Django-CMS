@@ -75,7 +75,7 @@ def user_logout(request):
     req={'message':'success','reason':'登出成功'}
     return HttpResponse(dumps(req),content_type="application/json")
 
-@csrf_exempt
+@login_required
 def resetpassword(request):
     if request.method == 'GET':
         data={}

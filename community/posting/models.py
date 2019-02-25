@@ -26,7 +26,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    name = models.CharField('名称',max_length=50)
+    username = models.ForeignKey(BlogUser,on_delete=models.CASCADE)
     body = models.TextField('评论内容')
     createDate = models.DateTimeField('创建时间', default=now)
     updateDate = models.DateTimeField('修改时间', default=now)
