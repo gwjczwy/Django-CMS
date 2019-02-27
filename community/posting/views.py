@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from .models import Post,Comment
 from accounts.models import BlogUser
 from django.views.decorators.csrf import csrf_exempt
@@ -10,10 +10,12 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def index(request):
+    '''
+    主页
+    '''
     postList=[]
     for i in Post.objects.all():
         postList.append(i.title)
-    print(postList)
     data={'postList':postList}
     return render(request, 'posting/index.html', data)
 
@@ -46,6 +48,7 @@ def getPostByTitle(request,postTitle):
 def createComment(request,postId):
     '''
     添加评论
+    只有登陆后才能登陆
     '''
     if request.method == 'POST':
         commentForm=CommentForm(request.POST)
@@ -65,25 +68,36 @@ def createComment(request,postId):
             return HttpResponse(dumps(req),content_type="application/json")
 
     else:
-        req={'message':'请求方式失败'}
+        req={'message':'fail','reason':'请求方式失败'}
         return HttpResponse(dumps(req),content_type="application/json")
 
+@login_required
 @csrf_exempt
 def createPosting(request):
-    if request.method == 'POST':
-        if 'title' not in request.POST or 'body' not in request.POST or 'author' not in request.POST:
-            req={'message':'发帖失败','reason':'内容缺失'}
+    '''
+    创建帖子
+    创建帖子的页面
+    '''
+    if request.method == 'POST':  #post请求创建post
+        postForm=PostForm(request.POST)
+        if postForm.is_valid():
+            postForm=postForm.save(commit=False)
+            user=BlogUser.objects.get(user=request.user)
+            postForm.author=user
+            postForm.save()
+            req={'message':'success','reason':'发帖成功'}
             return HttpResponse(dumps(req),content_type="application/json")
-        
-        author=request.POST['author']
-        body=request.POST['body']
-        title=request.POST['title']
-        req={'message':'发帖成功'}
+        else:
+            req={'message':'fail','reason':'发帖失败'}
+            return HttpResponse(dumps(req),content_type="application/json")
+
+
+    elif request.method == 'GET':  #get请求返回页面
+        postForm = PostForm()
+        data={
+            'postForm':postForm,
+        }
+        return render(request, 'posting/createPost.html', data)
+    else:
+        req={'message':'fail','reason':'请求方式错误'}
         return HttpResponse(dumps(req),content_type="application/json")
-
-
-
-
-
-        
-

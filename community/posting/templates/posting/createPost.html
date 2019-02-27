@@ -1,0 +1,7 @@
+发布新帖
+
+<form id="user_form" method="post" action="/posting/createposting/" enctype="multipart/form-data">
+    {% csrf_token %}
+     {{ postForm.as_p }}
+    <input type="submit" name="createComment" value="发送" />
+</form>

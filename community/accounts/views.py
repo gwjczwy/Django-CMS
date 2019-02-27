@@ -25,6 +25,9 @@ def index(request):
     return render(request, 'accounts/index.html',data)
 @csrf_exempt
 def register(request):
+    '''
+    注册账号
+    '''
     if request.method == 'GET':
         userForm = UserForm()
         profileForm = UserProfileForm()
@@ -42,6 +45,7 @@ def register(request):
             if 'mugshot' in request.FILES:
                 profile.mugshot = request.FILES['mugshot']
             profile.save()
+            # user_login(request)
             req={'message':'success','reason':'注册成功'}
             return HttpResponse(dumps(req),content_type="application/json")
         else:
@@ -50,6 +54,10 @@ def register(request):
 
 @csrf_exempt
 def user_login(request):
+    '''
+    用户登陆页面
+    登陆的后台逻辑
+    '''
     if request.method == 'GET':
         data={}
         return render(request, 'accounts/login.html', data)
@@ -71,12 +79,18 @@ def user_login(request):
 
 @login_required
 def user_logout(request):
+    '''
+    用户登出
+    '''
     logout(request)
     req={'message':'success','reason':'登出成功'}
     return HttpResponse(dumps(req),content_type="application/json")
 
 @login_required
 def resetpassword(request):
+    '''
+    重置密码
+    '''
     if request.method == 'GET':
         data={}
         return render(request, 'accounts/login.html', data)
@@ -116,5 +130,7 @@ def resetpassword(request):
 
 @csrf_exempt
 def getUserInfo(request):
-
+    '''
+    获取用户信息
+    '''
     return HttpResponse('todo')
