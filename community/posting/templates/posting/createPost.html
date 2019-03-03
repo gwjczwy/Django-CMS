@@ -1,7 +1,57 @@
-发布新帖
+{% include "./head.html" %}
+<title>发布新帖</title>
 
+
+<div class="container">
+    {% csrf_token %}
+    
+    <div class="input-group input-group-lg">
+        <span class="input-group-addon">标题</span>
+        <input type="text" class="form-control" placeholder="" name="title" id="id_title">
+    </div>
+    <br>
+        <textarea name="body" class="form-control" rows="8" id="id_body"></textarea>
+    <br>
+
+    <button class="btn btn-primary" onclick=send()>发布</button>
+
+<div id="reason" ></div>
+
+</div>
+
+
+<script>
+    function send()
+    {
+        var title = document.getElementById("id_title").value;
+        var body = document.getElementById("id_body").value;
+        var csrfmiddlewaretoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
+        $.post('', {'title':title, 'body':body,'csrfmiddlewaretoken':csrfmiddlewaretoken},
+        function(data){
+            if(data['message']=="success"){
+                console.log('成功');
+                var reasonDiv=document.getElementById("reason");
+                var reason=document.createElement("b");
+                reason.innerText='登陆成功,即将跳转';
+                reasonDiv.appendChild(reason);
+                document.location.href="/posting";
+            }else{
+                console.log('失败');
+                var reasonDiv=document.getElementById("reason");
+                var reason=document.createElement("b");
+                reason.innerText=data['reason'];
+                reasonDiv.appendChild(reason);
+                reasonDiv.appendChild(document.createElement("br"));
+            }
+        }
+        );
+    }
+</script>
+
+{% comment %} 原始发送页面代码
 <form id="user_form" method="post" action="/posting/createposting/" enctype="multipart/form-data">
     {% csrf_token %}
      {{ postForm.as_p }}
     <input type="submit" name="createComment" value="发送" />
-</form>
+     {% endcomment %}

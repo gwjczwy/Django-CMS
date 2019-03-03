@@ -1,10 +1,41 @@
+{% include "./head.html" %}  
+{% comment %} 引入使用include {% endcomment %}
+
+<title>用户主页</title>
 {% if hasLogin %}
-用户名 {{userProfile.user.username}}<br>
-邮箱{{userProfile.user.email}}<br>
-昵称{{userProfile.nickname}}<br>
-硬币{{userProfile.icon}}<br>
-电话号码{{userProfile.telephone}}<br>
-性别{{userProfile.gender}}<br>
+<table class="table">
+  <thead>
+    <tr>
+      <th>用户名</th>
+      <th>邮箱</th>
+      <th>昵称</th>
+      <th>硬币</th>
+      <th>电话号码</th>
+      <th>性别</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{userProfile.user.username}}</td>
+      <td>{{userProfile.user.email}}</td>
+      <td>{{userProfile.nickname}}</td>
+      <td>{{userProfile.icon}}</td>
+      <td>{{userProfile.telephone}}</td>
+      <td>{% if userProfile.gender == 's'%}
+        保密
+        {%elif userProfile.gender == 'm'%}
+        男
+        {% else %}
+        女
+        {%endif%}
+      </td>
+    </tr>
+  </tbody>
+</table>
 {% else %}
-<a href="/user/login">登陆</a>后可查看个人信息!
+<div class="container">
+<h1><a href="/user/login">登陆</a>后可查看个人信息!</h1>
+</div>
 {% endif %}
+
+

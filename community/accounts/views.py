@@ -14,14 +14,19 @@ def index(request):
     如果登陆了就显示个人信息等信息
     没有登陆则是一个空白界面
     '''
-    hasLogin=False
+    if request.user.is_authenticated:
+        user=request.user
+        hasLogin=True
+    else:
+        hasLogin=False
+        user=False
     if request.user.is_authenticated:  #django自带的一个判断是否为已登陆请求的方法
         user=request.user
         userProfile=BlogUser.objects.get(user=user)
         hasLogin=True
     else:
         userProfile=[]
-    data={'userProfile':userProfile,'hasLogin':hasLogin}
+    data={'userProfile':userProfile,'hasLogin':hasLogin,'user':user}
     return render(request, 'accounts/index.html',data)
 @csrf_exempt
 def register(request):
@@ -29,9 +34,15 @@ def register(request):
     注册账号
     '''
     if request.method == 'GET':
+        if request.user.is_authenticated:
+            user=request.user
+            hasLogin=True
+        else:
+            hasLogin=False
+            user=False
         userForm = UserForm()
         profileForm = UserProfileForm()
-        data={'userForm':userForm,'profileForm':profileForm,}
+        data={'userForm':userForm,'profileForm':profileForm,'hasLogin':hasLogin,'user':user}
         return render(request, 'accounts/register.html', data)
     elif request.method == 'POST':
         userForm = UserForm(request.POST)
@@ -46,8 +57,7 @@ def register(request):
                 profile.mugshot = request.FILES['mugshot']
             profile.save()
             # user_login(request)
-            req={'message':'success','reason':'注册成功'}
-            return HttpResponse(dumps(req),content_type="application/json")
+            return HttpResponseRedirect('/user/')
         else:
             req={'message':'fail','reason':'未接收到正确的表单,或创建过程中出错'}
             return HttpResponse(dumps(req),content_type="application/json")
@@ -59,7 +69,13 @@ def user_login(request):
     登陆的后台逻辑
     '''
     if request.method == 'GET':
-        data={}
+        if request.user.is_authenticated:
+            user=request.user
+            hasLogin=True
+        else:
+            hasLogin=False
+            user=False
+        data={'hasLogin':hasLogin,'user':user}
         return render(request, 'accounts/login.html', data)
     elif request.method == 'POST':
         username=request.POST['username']
@@ -83,49 +99,33 @@ def user_logout(request):
     用户登出
     '''
     logout(request)
-    req={'message':'success','reason':'登出成功'}
-    return HttpResponse(dumps(req),content_type="application/json")
+    return HttpResponseRedirect('/user/login')
 
+@csrf_exempt
 @login_required
 def resetpassword(request):
     '''
     重置密码
     '''
     if request.method == 'GET':
-        data={}
-        return render(request, 'accounts/login.html', data)
-    # elif request.method == 'POST':
-    #     uf = ResetPassForm(request.POST)
-    #     if uf.is_valid():
-    #         #获得表单数据
-    #         username = uf.cleaned_data['username']
-    #         password = uf.cleaned_data['password']
-    #         newPassword = uf.cleaned_data['newpassword']
-    #         #判断数据格式
-    #         if password == '':
-    #             req={'message':'fail','reason':'请填写密码'}
-    #             return HttpResponse(dumps(req),content_type="application/json")
-    #         #判断密码是否正确
-    #         if username != '':
-    #             res = BlogUser.objects.filter(username = username,password = password)
-    #             if res:
-    #                 res.password=newPassword
-    #                 res.save()
-    #                 req={'message':'success','reason':'修改成功'}
-    #                 return HttpResponse(dumps(req),content_type="application/json")
-    #             else:
-    #                 req={'message':'fail','reason':'密码与用户名不符'}
-    #                 return HttpResponse(dumps(req),content_type="application/json")
-    #         else:
-    #             req={'message':'fail','reason':'请填写用户名'}
-    #             return HttpResponse(dumps(req),content_type="application/json")
-    #     else:
-    #         req={'message':'fail','reason':'表单错误,无法接收到正确的信息'}
-    #         return HttpResponse(dumps(req),content_type="application/json")
-
-    # else:
-    #     req={'message':'fail','reason':'请求方式错误'}
-    #     return HttpResponse(dumps(req),content_type="application/json")
+        if request.user.is_authenticated:
+            user=request.user
+            hasLogin=True
+        else:
+            hasLogin=False
+            user=False
+        data={'hasLogin':hasLogin,'user':user}
+        return render(request, 'accounts/resetpassword.html', data)
+    elif request.method == 'POST':
+        user=request.user
+        user.set_password(request.POST['password'])
+        user.save()
+        req={'message':'success','reason':'更改成功'}
+        return HttpResponse(dumps(req),content_type="application/json")
+    else:
+        req={'message':'fall','reason':'请求方式错误'}
+        return HttpResponse(dumps(req),content_type="application/json")
+        
 
 
 @csrf_exempt

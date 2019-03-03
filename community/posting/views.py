@@ -17,9 +17,21 @@ def index(request):
     for i in Post.objects.all():
         postList.append(i.title)
     data={'postList':postList}
+
+    #验证是否登陆
+    if request.user.is_authenticated:
+        user=request.user
+        hasLogin=True
+    else:
+        hasLogin=False
+        user=False
+    data['hasLogin']=hasLogin
     return render(request, 'posting/index.html', data)
 
 def getPostByTitle(request,postTitle):
+    '''
+    查看帖子
+    '''
     if request.method == 'GET':
         post=Post.GetPost(title=postTitle)
         if post=='查询错误':
@@ -35,6 +47,14 @@ def getPostByTitle(request,postTitle):
             'comment':comment,
             'commentForm':commentForm,
         }
+        #验证是否登陆
+        if request.user.is_authenticated:
+            user=request.user
+            hasLogin=True
+        else:
+            hasLogin=False
+            user=False
+        data['hasLogin']=hasLogin
         return render(request, 'posting/post.html', data)
     elif request.method == 'POST':
         createComment(request)
@@ -76,7 +96,6 @@ def createComment(request,postId):
 def createPosting(request):
     '''
     创建帖子
-    创建帖子的页面
     '''
     if request.method == 'POST':  #post请求创建post
         postForm=PostForm(request.POST)
@@ -97,6 +116,14 @@ def createPosting(request):
         data={
             'postForm':postForm,
         }
+        #验证是否登陆
+        if request.user.is_authenticated:
+            user=request.user
+            hasLogin=True
+        else:
+            hasLogin=False
+            user=False
+        data['hasLogin']=hasLogin
         return render(request, 'posting/createPost.html', data)
     else:
         req={'message':'fail','reason':'请求方式错误'}

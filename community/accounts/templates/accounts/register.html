@@ -1,8 +1,57 @@
-已有账号?<a href="/user/login">点我</a>登陆<hr>
-
+{% include "./head.html" %}
+<div class="container">
+<h2>请注册 <a href="/user/login">已有账号</a>?</h2>
+<br>
 <form id="user_form" method="post" action="" enctype="multipart/form-data">
     {% csrf_token %}
     {{ userForm.as_p }}
     {{ profileForm.as_p }}
     <input type="submit" name="submit" value="Register" />
 </form>
+
+
+
+
+{% comment %} <form class="form-inline" role="form" method="post" action=""  enctype="multipart/form-data">
+<br><br>
+<div class="input-group">
+<span class="input-group-addon">用户名</span>
+	<input type="text" class="form-control" placeholder="" name="username" id="id_username">
+</div>
+<br><br>
+<div class="input-group">
+<span class="input-group-addon">邮&nbsp;&nbsp;&nbsp;&nbsp;箱</span>
+	<input type="email" name="email" class="form-control" placeholder="" id="id_email">
+</div>
+<br><br>
+<div class="input-group">
+<span class="input-group-addon">密&nbsp;&nbsp;&nbsp;&nbsp;码</span>
+	<input type="password" name="password" class="form-control" placeholder="" id="id_password">
+</div>
+<br><br>
+  <div class="form-group">
+    <label class="sr-only" for="inputfile">文件输入</label>
+    <input type="file" id="inputfile">
+  </div>
+<br><br>
+<div class="input-group">
+<span class="input-group-addon">昵&nbsp;&nbsp;&nbsp;&nbsp;称</span>
+	<input type="text" name="nickname" class="form-control" placeholder="" id="id_nickname">
+</div>
+<br><br>
+<div class="input-group">
+<span class="input-group-addon">性&nbsp;&nbsp;&nbsp;&nbsp;别</span>
+    <select class="form-control">
+      <option value="s">保密</option>
+      <option value="w">女孩子</option>
+      <option value="m">男孩子</option>
+    </select>
+</div>
+<br><br>
+<div class="input-group">
+<span class="input-group-addon">电&nbsp;&nbsp;&nbsp;&nbsp;话</span>
+	<input type="text" name="telephone" class="form-control" placeholder="" id="id_telephone">
+</div>
+<br><br>
+  <button type="submit" class="btn btn-default">提交</button>
+</form> {% endcomment %}

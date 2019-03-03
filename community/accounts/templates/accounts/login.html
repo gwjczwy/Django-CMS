@@ -1,13 +1,28 @@
-欢迎登陆 没有账号?<a href="/user/register">点我</a>注册<hr>
-<label>用户名</label>
-<input type="text" id="username"><br>
+{% include "./head.html" %}
+<title>登陆</title>
 
-<label>密码</label>
-<input type="password" id="password"><br>
 
-<input type="button" value="登陆" onclick=send()>
+<div class="container">
+<h2>请登陆 <a href="/user/register">没有账号</a>?</h2>
+<br>
+<div class="input-group">
+<span class="input-group-addon">用户名</span>
+	<input type="text" class="form-control" placeholder="" id="username">
+</div>
+<br>
+<div class="input-group">
+<span class="input-group-addon">密&nbsp;&nbsp;&nbsp;&nbsp码</span>
+	<input type="password" class="form-control" placeholder="" id="password">
+</div>
+<br>
+<p><a class="btn btn-primary btn-lg" role="button" onclick=send()>
+登陆</a>
+</p>
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
+<div id="reason" ></div>
+</div>
+
+
 
 <script>
     function send()
@@ -15,6 +30,24 @@
         var username = document.getElementById("username").value;
         var password = document.getElementById("password").value;
 
-        $.post('', {'username':username, 'password':password});
+        $.post('', {'username':username, 'password':password},
+        function(data){
+            if(data['message']=="success"){
+                console.log('成功');
+                var reasonDiv=document.getElementById("reason");
+                var reason=document.createElement("b");
+                reason.innerText='登陆成功,即将跳转';
+                reasonDiv.appendChild(reason);
+                document.location.href="/user";
+            }else{
+                console.log('失败');
+                var reasonDiv=document.getElementById("reason");
+                var reason=document.createElement("b");
+                reason.innerText=data['reason'];
+                reasonDiv.appendChild(reason);
+                reasonDiv.appendChild(document.createElement("br"));
+            }
+        }
+        );
     }
 </script>

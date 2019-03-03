@@ -1,5 +1,10 @@
+{% include "./head.html" %}
+<title>帖子专区</title>
+
+<div class="container">
 {%for i in postList%}
 
-<a href="{{i}}">{{i}}</a></br>
+<h2><a href="{{i}}">{{i}}</a></h2>
 
 {% endfor %}
+</div>

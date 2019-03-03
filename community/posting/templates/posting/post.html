@@ -1,12 +1,42 @@
-<a href="/posting/createposting/">创建新帖子</a><hr>
+{% include "./head.html" %}
+<title>{{post.title}}</title>
 
-{% comment %} post {% endcomment %}
-{{post.title}}<br>
+
+<div class="container">
+    <div name="artical">
+    <h1>{{post.title}}</h1>
+    <h6><b>作者  </b>{{post.author}}</h6>
+    <h4>{{post.body}}</h4>
+    </div>
+
+    <div name="commentList">
+        <div name="comment" id="commentList"></div>
+        {%for i in comment%}
+        <div name="comment" id="commentList">
+            <b>{{i.username}}</b>
+            <p>{{i.body}}<br>
+            <b>{{i.createDate}}</b></p>
+        </div>
+        {% endfor %}
+        <hr>
+        <div class="input-group" name="createComment">
+            {% csrf_token %}
+            <input type="text" class="form-control" placeholder="" id="id_body">
+            <span class="input-group-addon" onclick=send()>发表评论</span>
+        </div>
+        <div id="reason" name="reason"></div>
+    </div>
+
+
+</div>
+
+
+{% comment %} {{post.title}}<br>
 {{post.author}}<br>
 {{post.body}}<br>
 {{post.createDate}}<br>
 {{post.updateDate}}<br>
-{% comment %} comment {% endcomment %}
+
 {%for i in comment%}
 
 <hr>
@@ -15,10 +45,36 @@
 {{i.createDate}}
 
 {% endfor %}
-{% comment %} create comment {% endcomment %}
-
 <form id="user_form" method="post" action="/posting/createcomment/{{post.id}}" enctype="multipart/form-data">
     {% csrf_token %}
      {{ commentForm.as_p }}
     <input type="submit" name="createComment" value="发送" />
 </form>
+
+{% endcomment %}
+
+
+<script>
+    function send()
+    {
+        var body = document.getElementById("id_body").value;
+        var csrfmiddlewaretoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
+        $.post('/posting/createcomment/{{post.id}}', {'body':body,'csrfmiddlewaretoken':csrfmiddlewaretoken},
+        function(data){
+            if(data['message']=="success"){
+                console.log('成功');
+                var $com=$("<div name='comment'><b>{{user.username}}</b><p>"+body+"<br><b>刚刚</b></p>");
+                $("#commentList").prepend($com);
+            }else{
+                console.log('失败');
+                var reasonDiv=document.getElementById("reason");
+                var reason=document.createElement("b");
+                reason.innerText=data['reason'];
+                reasonDiv.appendChild(reason);
+                reasonDiv.appendChild(document.createElement("br"));
+            }
+        }
+        );
+    }
+</script>
